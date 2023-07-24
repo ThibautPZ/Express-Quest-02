@@ -20,6 +20,7 @@ app.get("/api/movies", movieHandlers.getMovies);
 app.get("/api/movies/:id", movieHandlers.getMovieById);
 app.post("/api/movies/", movieHandlers.postMovie);
 app.put("/api/movies/:id", movieHandlers.changeMovie);
+app.delete("/api/movies/:id", movieHandlers.deleteMovie);
 
 const usersHandler = require("./usersHandlers");
 
@@ -27,6 +28,7 @@ app.get("/api/users", usersHandler.getUsers);
 app.get("/api/users/:id", usersHandler.getUserById);
 app.post("/api/users/", usersHandler.addUser);
 app.put("/api/users/:id", usersHandler.changeUser);
+app.delete("/api/users/:id", usersHandler.deleteUser);
 
 app.listen(port, (err) => {
   if (err) {

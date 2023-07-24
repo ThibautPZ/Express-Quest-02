@@ -18,7 +18,7 @@ const getUserById = (req, res) => {
     if (users[0] != null) {
       res.status(200).json(users[0]);
     } else {
-      res.status(404).send("Not Found");
+      res.status(404).send("🥥 Nut found");
     }
   });
 };
@@ -60,9 +60,30 @@ const changeUser = (req, res) => {
     });
 };
 
+const deleteUser = (req, res) => {
+  const id = parseInt(req.params.id);
+  database
+    .query("DELETE FROM users WHERE id = ?", [id])
+    .then(([result]) => {
+      if (result.affectedRows === 0) {
+        res.status(404).send("🥥 Nut found");
+      } else {
+        res.sendStatus(204);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+
+      res
+        .status(500)
+        .send("Error deleting the user. He'll live another day...");
+    });
+};
+
 module.exports = {
   getUsers,
   getUserById,
   addUser,
   changeUser,
+  deleteUser,
 };
