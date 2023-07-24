@@ -39,8 +39,30 @@ const addUser = (req, res) => {
     });
 };
 
+const changeUser = (req, res) => {
+  const id = req.params.id;
+  const { firstname, lastname, email, city, language } = req.body;
+  database
+    .query(
+      "UPDATE users SET firstname = ?, lastname = ?, email = ?, city = ?, language = ? where id = ?",
+      [firstname, lastname, email, city, language, id]
+    )
+    .then(([result]) => {
+      if (result.affectedRows === 0) {
+        res.status(404).send("🥥 Nut found");
+      } else {
+        res.sendStatus(204);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error changing the user");
+    });
+};
+
 module.exports = {
   getUsers,
   getUserById,
   addUser,
+  changeUser,
 };
