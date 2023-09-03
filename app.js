@@ -15,22 +15,41 @@ const welcome = (req, res) => {
 app.get("/", welcome);
 
 const movieHandlers = require("./movieHandlers");
+const usersHandlers = require("./usersHandlers");
 const { validateMovie, validateUser } = require("./validators.js");
-const { hashPassword } = require("./auth.js");
+const {
+  hashPassword,
+  verifyPassword,
+  verifyToken,
+  verifyTokenWithUserId,
+} = require("./auth.js");
+// const isDwight = require("./isDwight");
 
 app.get("/api/movies", movieHandlers.getMovies);
 app.get("/api/movies/:id", movieHandlers.getMovieById);
+app.get("/api/users", usersHandlers.getUsers);
+app.get("/api/users/:id", usersHandlers.getUserById);
+app.post("/api/users/", hashPassword, validateUser, usersHandlers.addUser);
+app.post(
+  "/api/login",
+  usersHandlers.getUserByEmailWithPasswordAndPassToNextWithFriesAndALargeSodaPlease,
+  verifyPassword
+);
+
+app.use(verifyToken);
+
 app.post("/api/movies", validateMovie, movieHandlers.postMovie);
 app.put("/api/movies/:id", validateMovie, movieHandlers.changeMovie);
 app.delete("/api/movies/:id", movieHandlers.deleteMovie);
 
-const usersHandler = require("./usersHandlers");
-
-app.get("/api/users", usersHandler.getUsers);
-app.get("/api/users/:id", usersHandler.getUserById);
-app.post("/api/users/", hashPassword, validateUser, usersHandler.addUser);
-app.put("/api/users/:id", hashPassword, validateUser, usersHandler.changeUser);
-app.delete("/api/users/:id", usersHandler.deleteUser);
+app.put(
+  "/api/users/:id",
+  hashPassword,
+  validateUser,
+  verifyTokenWithUserId,
+  usersHandlers.changeUser
+);
+app.delete("/api/users/:id", verifyTokenWithUserId, usersHandlers.deleteUser);
 
 app.listen(port, (err) => {
   if (err) {
